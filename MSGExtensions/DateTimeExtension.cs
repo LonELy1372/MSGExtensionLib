@@ -9,7 +9,7 @@ namespace MSGExtensions
 {
     public static class DateTimeExtension
     {
-        public enum PersianDateType { NumberMode, MonthString, FullText, Digit8, TimeOnly, YearOnly, FullString }
+        public enum PersianDateType { NumberMode, MonthString, FullText, Digit8, TimeOnly, YearOnly, DayMonthString, FullString }
 
         public enum HourType { Hour12, Hour24, Hour12WithSec, Hour24WithSec }
         public static String PersionDayOfWeek(this DateTime date)
@@ -72,7 +72,7 @@ namespace MSGExtensions
                     case 11: _monthString = "بهمن"; break;
                     case 12: _monthString = "اسفند"; break;
                 }
-                _date = day + " " + _monthString + " " + year % 100;
+                _date = day + " " + _monthString + " " + year;
             }
             else if (Format == PersianDateType.FullText)
             {
@@ -86,9 +86,28 @@ namespace MSGExtensions
             {
                 _date = (hour < 10 ? "0" + hour : hour.ToString()) + ":" + (min < 10 ? "0" + min : min.ToString()) + ":" + (sec < 10 ? "0" + sec : sec.ToString());
             }
-            else if(Format == PersianDateType.FullString)
+            else if (Format == PersianDateType.DayMonthString)
             {
-
+                switch (month)
+                {
+                    case 1: _monthString = "فروردین"; break;
+                    case 2: _monthString = "اردیبهشت"; break;
+                    case 3: _monthString = "خرداد"; break;
+                    case 4: _monthString = "تیر"; break;
+                    case 5: _monthString = "مرداد"; break;
+                    case 6: _monthString = "شهریور"; break;
+                    case 7: _monthString = "مهر"; break;
+                    case 8: _monthString = "آبان"; break;
+                    case 9: _monthString = "آذر"; break;
+                    case 10: _monthString = "دی"; break;
+                    case 11: _monthString = "بهمن"; break;
+                    case 12: _monthString = "اسفند"; break;
+                }
+                _date = day + " " + _monthString;
+            }
+            else if (Format == PersianDateType.FullString)
+            {
+                _date = ToPersianDateString(date, PersianDateType.MonthString);
             }
             return _date;
         }
@@ -123,7 +142,7 @@ namespace MSGExtensions
             {
                 try
                 {
-                    var splited = PersianDateTime.ToEnglishNumber().Split('/');
+                    var splited = PersianDateTime.ToEnglishNumber().Split('/', '-');
                     int year, month, day;
                     Int32.TryParse(splited[0], out year);
                     Int32.TryParse(splited[1], out month);
@@ -370,8 +389,8 @@ namespace MSGExtensions
                     y = y - yd;
                     m = 12 - Math.Abs(m1) % 12;
                 }
-                
-                return y + "/" + m.ToString().PadLeft(2,'0') + "/" + d.ToString().PadLeft(2, '0');
+
+                return y + "/" + m.ToString().PadLeft(2, '0') + "/" + d.ToString().PadLeft(2, '0');
             }
 
         }
@@ -397,6 +416,12 @@ namespace MSGExtensions
             }
 
             return yearInWords.Replace("صفر", "");
+        }
+
+        public static string ToGregorianString(this DateTime dateTime)
+        {
+            return dateTime.ToString("M/d/yyyy h:mm:ss tt",
+                System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }
