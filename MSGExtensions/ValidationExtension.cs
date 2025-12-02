@@ -9,7 +9,7 @@ namespace MSGExtensions
 {
     public static class ValidationExtension
     {
-        public static bool IsValidIranianMobile(string mobile)
+        public static bool IsValidIranianMobile(this string mobile)
         {
             if (string.IsNullOrWhiteSpace(mobile))
                 return false;
